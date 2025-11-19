@@ -159,3 +159,5 @@ fi
 # Nuevas caracteristicas
 
 set -o vi
+
+eval "$(mise activate bash)"

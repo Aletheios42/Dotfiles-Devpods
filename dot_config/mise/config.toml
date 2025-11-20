@@ -1,4 +1,4 @@
 [tools]
 bat = "latest"
 chezmoi = "latest"
-ripgrep = "lastest"
+ripgrep = "latest"

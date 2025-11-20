@@ -1,0 +1,70 @@
+#!/bin/bash
+
+zz() {
+  local selected_file
+  selected_file=$(find ~ \( -type f -o -type d \) -not -path '*/\.*' 2>/dev/null | fzf --height 40% --reverse --prompt="Selecciona: ")
+  
+  if [[ -z "$selected_file" ]]; then
+    # El usuario canceló FZF
+    return 0
+  fi
+
+  if [[ -f "$selected_file" ]]; then
+    cd -- "$(dirname "$selected_file")" || return 1
+  elif [[ -d "$selected_file" ]]; then
+    cd -- "$selected_file" || return 1
+  fi
+}
+
+# Search command history with fzf (compatible with both bash and zsh)
+fhist() {
+  local cmd
+  if [[ -n "$ZSH_VERSION" ]]; then
+    # Zsh version
+    cmd=$(fc -l 1 | fzf --tac | sed 's/ *[0-9]*\** *//')
+  else
+    # Bash version
+    cmd=$(history | fzf --tac | sed 's/ *[0-9]* *//')
+  fi
+  
+  if [[ -n "$cmd" ]]; then
+    echo "$cmd"
+    eval "$cmd"
+  fi
+}
+
+# Recargar la configuracion de la shell
+reload_shell() {
+    case "$SHELL" in
+        */zsh)
+            source ~/.zshrc
+            ;;
+        */bash)
+            source ~/.bashrc
+            ;;
+        *)
+            echo "Shell no soportada: $SHELL"
+            ;;
+    esac
+}
+# extract - Extrae cualquier archivo comprimido automáticamente
+extract() {
+  if [ -f $1 ]; then
+    case $1 in
+      *.tar.bz2) tar xjf $1 ;;
+      *.tar.gz) tar xzf $1 ;;
+      *.bz2) bunzip2 $1 ;;
+      *.rar) unrar e $1 ;;
+      *.gz) gunzip $1 ;;
+      *.tar) tar xf $1 ;;
+      *.tbz2) tar xjf $1 ;;
+      *.tgz) tar xzf $1 ;;
+      *.zip) unzip $1 ;;
+      *.Z) uncompress $1 ;;
+      *.7z) 7z x $1 ;;
+      *) echo "'$1' no se puede extraer" ;;
+    esac
+  else
+    echo "'$1' no es un archivo válido"
+  fi
+}

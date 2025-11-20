@@ -1,0 +1,14 @@
+# $DOTFILES/exports
+export CONFIG="$HOME/.config"
+export GITHUB="https://github.com/Aletheios42"
+export DOCKERHUB="https://hub.docker.com/repositories/alejandropintosdev"
+export LC_ALL="es_ES.UTF-8"
+export LANG="es_ES.UTF-8"
+export LANGUAGE="es_ES.UTF-8"
+export EDITOR="nvim"
+export VISUAL="nvim"
+export PAGER="less"
+export HISTSIZE=10000
+export HISTFILESIZE=10000
+export HISTCONTROL=ignoreboth
+export KEYTIMEOUT=1 # make switching between modes faster

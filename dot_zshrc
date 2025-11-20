@@ -1,0 +1,88 @@
+# ~/.zshrc
+
+# Si no está en modo interactivo, no hacer nada
+[[ $- != *i* ]] && return
+
+export DOTFILES="/home/$USER/dotfiles"
+
+#### Variables de Entorno ####
+export SHELL_EXPORTS="$DOTFILES/shell/exports"
+if [[ -f "$SHELL_EXPORTS" ]]; then
+  source "$SHELL_EXPORTS"
+fi
+
+#### Alias ####
+export SHELL_ALIASES="$DOTFILES/shell/aliases"
+if [[ -f "$SHELL_ALIASES" ]]; then
+  source "$SHELL_ALIASES"
+fi
+
+#### Cargar Funciones de Shell ####
+export SHELL_FUNC_PATH="$DOTFILES/shell/functions"
+if [[ -f "$SHELL_FUNC_PATH" ]]; then
+  source "$SHELL_FUNC_PATH"
+fi
+
+#### Configuración General de ZSH ####
+
+# Habilitar zsh vi-mode
+bindkey -v
+export KEYTIMEOUT=1  # Hacer más rápido el cambio entre los modos insertar y normal
+
+# Deshabilitar el sonido de beep
+unsetopt BEEP
+setopt NO_BEEP
+
+# Definir Ctrl+P para ejecutar el comando clear,
+# para evitar conflicto con navegacion tmux-nvim
+bindkey -s '^P' 'clear\n'
+
+# activar mise
+eval "$(mise activate bash)"
+
+# Prompt personalizado
+eval "$(starship init zsh)"
+
+#### Autocompletado ####
+# Cargar el sistema de autocompletado
+autoload -Uz compinit
+compinit
+
+# Opciones generales de autocompletado
+setopt AUTO_MENU
+setopt COMPLETE_IN_WORD
+setopt ALWAYS_TO_END
+
+# Autocompletado con fzf
+if command -v fzf > /dev/null ; then
+  source <(fzf --zsh)
+fi
+# Autocompletado con caché
+zstyle ':completion:*' use-cache on
+zstyle ':completion:*' cache-path "$HOME/.zcompcache"
+
+# Estilos y formato del autocompletado
+zstyle ':completion:*' menu select
+zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
+zstyle ':completion:*' verbose yes
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
+
+# Configuración avanzada de autocompletado
+zstyle ':completion:*:*:*:*:*' menu select
+zstyle ':completion:*:matches' group 'yes'
+zstyle ':completion:*:options' description 'yes'
+zstyle ':completion:*:options' auto-description '%d'
+zstyle ':completion:*:corrections' format ' %F{green}-- %d (errors: %e) --%f'
+zstyle ':completion:*:descriptions' format ' %F{yellow}-- %d --%f'
+zstyle ':completion:*:messages' format ' %F{purple} -- %d --%f'
+zstyle ':completion:*:warnings' format ' %F{red}-- no matches found --%f'
+zstyle ':completion:*:default' list-prompt '%S%M matches%s'
+zstyle ':completion:*' format ' %F{yellow}-- %d --%f'
+zstyle ':completion:*' group-name ''
+
+# Completar comandos, archivos, etc.
+zstyle ':completion:*' completer _expand _complete _correct _approximate
+
+#### Autocompletado ZSH ####
+# Ruta de los completions adicionales
+fpath=($HOME/.zsh_completions $fpath)

@@ -1,0 +1,45 @@
+# $DOTFILES/shell/aliases
+
+# Alias para abrir y editar configuraciones
+alias bashrc='nvim ~/.bashrc'
+alias zshrc='nvim ~/.zshrc'
+alias vimrc='vim ~/.vimrc'
+
+# Alias para herramientas
+alias n='nvim'
+alias rg='ripgrep'
+
+# Alias de utilidad
+alias ls='ls --color=auto'
+alias grep='grep --color=auto'
+alias clip='xclip -selection clipboard'
+alias lscat='find . -type f \
+    -not -path "*/.git/*" \
+    -not -path "*/node_modules/*" \
+    -not -name "*.log" \
+    -not -name "*.sqlite" \
+    -not -name "*.db" \
+    -not -name "*.zip" \
+    -not -name "*.tar.gz" \
+    -not -name "*.rar" \
+    -not -name "*.png" \
+    -not -name "*.jpg" \
+    -not -name "*.jpeg" \
+    -not -name "*.gif" \
+    -not -name "*.bmp" \
+    -not -name "*.svg" \
+    -not -name "*.ico" \
+    -not -name "*.mp3" \
+    -not -name "*.mp4" \
+    -not -name "*.avi" \
+    -not -name "*.mov" \
+    -not -name "*.pdf" \
+    -not -name "*.doc" \
+    -not -name "*.docx" \
+    -not -name "*.xls" \
+    -not -name "*.xlsx" \
+    -not -name "*.ppt" \
+    -not -name "*.pptx" \
+    -exec echo "--- Archivo: {} ---" \; \
+    -exec cat "{}" \;'
+

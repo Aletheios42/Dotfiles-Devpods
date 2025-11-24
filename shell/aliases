@@ -8,6 +8,7 @@ alias vimrc='vim ~/.vimrc'
 # Alias para herramientas
 alias n='nvim'
 alias rg='ripgrep'
+alias k='kubectl'
 
 # Alias de utilidad
 alias ls='ls --color=auto'

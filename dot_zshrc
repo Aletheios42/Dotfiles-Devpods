@@ -38,7 +38,7 @@ setopt NO_BEEP
 bindkey -s '^P' 'clear\n'
 
 # activar mise
-eval "$(mise activate bash)"
+eval "$(mise activate zsh)"
 
 # Prompt personalizado
 eval "$(starship init zsh)"
@@ -53,10 +53,16 @@ setopt AUTO_MENU
 setopt COMPLETE_IN_WORD
 setopt ALWAYS_TO_END
 
-# Autocompletado con fzf
+# autocompletado con fzf
 if command -v fzf > /dev/null ; then
   source <(fzf --zsh)
 fi
+
+# autocompletado kubectl
+if command -v kubectl > /dev/null; then
+  source <(kubectl completion zsh)
+fi
+
 # Autocompletado con caché
 zstyle ':completion:*' use-cache on
 zstyle ':completion:*' cache-path "$HOME/.zcompcache"
@@ -83,6 +89,5 @@ zstyle ':completion:*' group-name ''
 # Completar comandos, archivos, etc.
 zstyle ':completion:*' completer _expand _complete _correct _approximate
 
-#### Autocompletado ZSH ####
 # Ruta de los completions adicionales
 fpath=($HOME/.zsh_completions $fpath)

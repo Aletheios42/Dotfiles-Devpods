@@ -34,7 +34,7 @@ fhist() {
 }
 
 # Recargar la configuracion de la shell
-reload_shell() {
+reload() {
     case "$SHELL" in
         */zsh)
             source ~/.zshrc

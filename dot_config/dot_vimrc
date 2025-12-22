@@ -1,0 +1,138 @@
+let mapleader = " "
+" Olvidar vi
+set nocompatible
+let skip_defaults_vim=1
+colorscheme slate " colorscheme bonito
+syntax enable " Para tener colores bonitos
+set colorcolumn=81 " formato bonito
+highlight ColorColumn ctermbg=235 guibg=#2c2d27
+set number relativenumber " activa los numeros laterales
+set cursorline " hace que se vea destacada la linea del cursor
+
+" tabs are the devil
+set expandtab
+set tabstop=2
+set softtabstop=2
+set shiftwidth=2
+set smartindent
+set smarttab
+set autoindent
+
+set clipboard=unnamedplus " no apila las lineas largas
+
+set nobackup " no bullshit, more risky, but cleaner
+set noswapfile
+set nowritebackup
+
+
+set laststatus=0 " keep the terminal title updated
+set icon
+
+set listchars=tab:→\ ,eol:↲,nbsp:␣,space:·,trail:·,extends:⟩,precedes:⟨ " easier to see characters when `set paste` is on
+
+
+set hlsearch " highlight search hits,  \+<cr> to clear 
+set incsearch
+set linebreak
+map <silent> <leader><cr> :noh<cr>
+
+
+set shortmess=aoOtI " avoid most of the 'Hit Enter ...' messages
+set viminfo='20,<1000,s1000 " prevents truncated yanks, deletes, etc.
+
+" requires PLATFORM env variable set (in ~/.bashrc)
+if $PLATFORM == 'mac'
+  " required for mac delete to work
+  set backspace=indent,eol,start
+endif
+
+
+set hidden " stop complaints about switching buffer with changes
+set history=100 " command history
+set path+=** " Puedes buscar archivos en los subdirectorios de tus subdirectorios(fzf - like)
+set ttyfast " faster scrolling
+set wildmenu " Enseña todos los patrones coincidentes para Tab Completion 
+set belloff=all " Quitar la campanita del deminio
+
+" not a fan of bracket matching or folding
+let g:loaded_matchparen=1
+set noshowmatch
+set foldmethod=manual
+
+
+" functions keys
+map <F1> :set number!<CR> :set relativenumber!<CR>
+nmap <F2> :call <SID>SynStack()<CR>
+set pastetoggle=<F3>
+map <F4> :set list!<CR>
+map <F5> :set cursorline!<CR>
+map <F10> :set spell!<CR>
+map <F11> :set hlsearch!<CR>
+map <F12> :set fdm=indent<CR>
+
+" para los tab
+  "" Mapea Tab para ir a la siguiente pestaña
+nnoremap <Tab> :tabnext<CR>
+  "" Mapea Shift+Tab para ir a la pestaña anterior
+nnoremap <S-Tab> :tabprevious<CR>
+
+" fzf
+  "" Mapping selecting mappings
+nmap <leader><tab> <plug>(fzf-maps-n)
+xmap <leader><tab> <plug>(fzf-maps-x)
+omap <leader><tab> <plug>(fzf-maps-o)
+
+  "" Insert mode completion
+imap <c-x><c-k> <plug>(fzf-complete-word)
+imap <c-x><c-f> <plug>(fzf-complete-path)
+imap <c-x><c-l> <plug>(fzf-complete-line)
+
+" gutentags
+" !!!! ESTA ROTO !!
+" let g:gutentags_cache_dir = expand('~/.cache/vim/ctags/')
+" CTAGS en memoria
+""Plug 'ludovicchabant/vim-gutentags'
+
+filetype plugin on " Poder instalar plugins
+
+" Install vim-plug if not already installed
+if empty(glob('~/.vim/autoload/plug.vim'))
+  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  autocmd VimEnter * PlugInstall
+endif
+
+
+call plug#begin('~/.vim/plugged') " Initialize plugin system
+
+" Tmux navigator
+Plug 'christoomey/vim-tmux-navigator'
+
+" fzf
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
+
+" ## plugins LSP
+Plug 'prabirshrestha/vim-lsp'
+Plug 'mattn/vim-lsp-settings'
+Plug 'prabirshrestha/asyncomplete.vim'
+Plug 'prabirshrestha/asyncomplete-lsp.vim'
+Plug 'dense-analysis/ale'
+
+call plug#end()
+
+function! s:on_lsp_buffer_enabled() abort
+    setlocal omnifunc=lsp#complete
+    setlocal signcolumn=yes
+    if exists('+tagfunc') | setlocal tagfunc=lsp#tagfunc | endif
+
+    let g:lsp_format_sync_timeout = 1000
+    autocmd! BufWritePre *.rs,*.go call execute('LspDocumentFormatSync')
+endfunction
+
+augroup lsp_install
+    au!
+    autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
+augroup END
+let g:lsp_diagnostics_echo_cursor = 1
+ autocmd FileType * setlocal formatoptions-=r formatoptions-=o " Evita que los comentarios se expandan

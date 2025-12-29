@@ -58,11 +58,6 @@ if command -v fzf > /dev/null ; then
   source <(fzf --zsh)
 fi
 
-# autocompletado kubectl
-if command -v kubectl > /dev/null; then
-  source <(kubectl completion zsh)
-fi
-
 # Autocompletado con caché
 zstyle ':completion:*' use-cache on
 zstyle ':completion:*' cache-path "$HOME/.zcompcache"

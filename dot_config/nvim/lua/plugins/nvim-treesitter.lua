@@ -1,53 +1,37 @@
 return {
-    {
-        "nvim-treesitter/nvim-treesitter",
-        dependencies = {
-            "nvim-treesitter/nvim-treesitter-textobjects",
+  -- 1. El motor de Treesitter solo
+  {
+    "nvim-treesitter/nvim-treesitter",
+    build = ":TSUpdate",
+    lazy = false, -- Forzamos a que este sea el primero siempre
+    config = function()
+      require("nvim-treesitter.configs").setup({
+        ensure_installed = { "c", "lua", "vim", "vimdoc", "query" },
+        auto_install = true,
+        highlight = { enable = true },
+      })
+    end,
+  },
+
+  -- 2. Los textobjects por separado y con carga retardada
+  {
+    "nvim-treesitter/nvim-treesitter-textobjects",
+    event = "VeryLazy", -- ESTO es vital: no se cargará hasta que Neovim esté listo
+    config = function()
+      require("nvim-treesitter.configs").setup({
+        textobjects = {
+          select = {
+            enable = true,
+            lookahead = true,
+            keymaps = {
+              ["af"] = "@function.outer",
+              ["if"] = "@function.inner",
+              ["ac"] = "@class.outer",
+              ["ic"] = { query = "@class.inner", desc = "Select inner part of a class region" },
+            },
+          },
         },
-        config = function()
-            require("nvim-treesitter.configs").setup({                ensure_installed = {"c", "lua", "vim", "vimdoc", "query", "rust"},
-                auto_install = true,
-                highlight = {
-                    enable = true,
-                },
-                incremental_selection = {
-                    enable = true,
-                    keymaps = {
-                        init_selection = "<leader>ss",
-                        node_incremental = "<leader>si",
-                        scope_incremental = "<leader>sc",
-                        node_decremental = "<leader>sd",
-                    }
-               },
-                -- https://github.com/cyclotruc/gitingest mirar mas movimientos move, swap....
-                textobjects = {
-                    select = {
-                        enable = true,
-
-                        -- Automatically jump forward to textobj, similar to targets.vim
-                        lookahead = true,
-
-                        keymaps = {
-                            -- You can use the capture groups defined in textobjects.scm
-                            ["af"] = "@function.outer",
-                            ["if"] = "@function.inner",
-                            ["ac"] = "@class.outer",
-                            -- You can optionally set descriptions to the mappings (used in the desc parameter of
-                            -- nvim_buf_set_keymap) which plugins like which-key display
-                            ["ic"] = { query = "@class.inner", desc = "Select inner part of a class region" },
-                            -- You can also use captures from other query groups like `locals.scm`
-                            ["as"] = { query = "@local.scope", query_group = "locals", desc = "Select language scope" },
-                        },
-                        -- You can choose the select mode ('v', 'V', or '<c-v>')
-                        selection_modes = {
-                            ['@parameter.outer'] = 'v', -- charwise
-                            ['@function.outer'] = 'V', -- linewise
-                            ['@class.outer'] = '<c-v>', -- blockwise
-                        },
-                        include_surrounding_whitespace = true,
-                    },
-                },
-            })
-        end,
-    },
+      })
+    end,
+  },
 }

@@ -1,4 +1,26 @@
 #!/bin/bash
 
-# packages hash: {{ include "dot_config/mise/config.toml" | sha256sum }}
-$HOME/.local/bin/mise trust $HOME/.config/mise/config.toml && $HOME/.local/bin/mise install
+# packages hash: {{ include "dot_config/mise/config.toml.tmpl" | sha256sum }}
+# profile hash: {{ include (printf ".profiles/%s/mise.toml" .profile) | sha256sum }}
+
+set -e
+
+PROJECT_REPO="${REPO:-dotfile-test}"
+PROJECT_DIR="/workspaces/$PROJECT_REPO"
+
+if [ -d "$PROJECT_DIR" ]; then
+    echo "Entrando en contexto del proyecto: $PROJECT_DIR"
+    cd "$PROJECT_DIR"
+    
+    # Activamos el entorno para tener 'cargo' disponible
+    eval "$($HOME/.local/bin/mise activate bash)"
+else
+    echo "No se encontró la carpeta del proyecto. Se instalará sin contexto de Rust."
+fi
+
+echo "🚀 Instalando herramientas..."
+# 1. Confiamos en tu config personal
+$HOME/.local/bin/mise trust $HOME/.config/mise/config.toml
+
+# 2. Instalamos todo (Mise fusiona automáticamente Global + Local)
+$HOME/.local/bin/mise install --yes

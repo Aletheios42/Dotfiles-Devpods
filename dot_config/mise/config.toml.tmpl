@@ -1,0 +1,11 @@
+[tools]
+# 1. Incluir siempre la base (default)
+{{ include ".profiles/default/mise.toml" }}
+
+# 2. Calcular la ruta del perfil activo
+{{ $profileMise := printf ".profiles/%s/mise.toml" .profile }}
+
+# 3. Si existe un archivo para ese perfil, inyéctalo
+{{ if stat (joinPath .chezmoi.sourceDir $profileMise) }}
+{{   include $profileMise }}
+{{ end }}

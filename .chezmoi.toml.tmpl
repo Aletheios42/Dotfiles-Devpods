@@ -1,0 +1,3 @@
+[data]
+    # Busca la variable de entorno DOTFILES_PROFILE. Si no existe, usa "default".
+    profile = {{ env "DOTFILES_PROFILE" | default "default" | quote }}

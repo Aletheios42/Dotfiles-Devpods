@@ -1,0 +1,6 @@
+# .profiles/rust_backend/mise.toml
+# NO ponemos 'rust' aquí (eso lo pone el proyecto)
+# Ponemos herramientas de productividad personal:
+"cargo:bacon" = "latest"
+"cargo:bottom" = "latest"
+"cargo:cargo-watch" = "latest"

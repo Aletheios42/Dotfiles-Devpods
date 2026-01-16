@@ -1,0 +1,30 @@
+local M = {}
+
+-- 1. BASE: Lo que quieres SIEMPRE (Default)
+M.treesitter = {
+    "c", "lua", "vim", "vimdoc", "query", "markdown", "markdown_inline", "bash", "regex"
+}
+M.mason_lsp = {
+    "lua_ls", "bashls"
+}
+M.mason_tools = {
+    "shfmt", "stylua" -- Formatters genéricos
+}
+
+-- 2. INYECCIÓN DINÁMICA: Según el perfil activo
+-- Perfil actual: {{ .profile }}
+
+{{ if eq .profile "rust_backend" }}
+-- Inyecciones para RUST
+vim.list_extend(M.treesitter, { "rust", "toml" })
+vim.list_extend(M.mason_lsp, { "rust_analyzer", "taplo" }) -- taplo es para toml
+vim.list_extend(M.mason_tools, { "codelldb" }) -- Debugger
+{{ end }}
+
+{{ if eq .profile "node_frontend" }}
+-- Inyecciones para NODE (Ejemplo futuro)
+vim.list_extend(M.treesitter, { "javascript", "typescript", "html", "css" })
+vim.list_extend(M.mason_lsp, { "ts_ls", "html", "cssls" })
+{{ end }}
+
+return M

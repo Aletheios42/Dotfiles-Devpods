@@ -2,18 +2,20 @@ return {
   {
     "nvim-treesitter/nvim-treesitter",
     build = ":TSUpdate",
-    event = { "BufReadPost", "BufNewFile" }, -- Better than lazy=false for performance
+    event = { "BufReadPost", "BufNewFile" },
     dependencies = {
       "nvim-treesitter/nvim-treesitter-textobjects",
     },
     config = function()
+      -- IMPORTANTE: Cargamos los datos generados por Chezmoi
+      local profile_data = require("config.profile_data")
+
       require("nvim-treesitter.configs").setup({
-        -- Core configuration
-        ensure_installed = { "c", "c++", "lua", "vim", "vimdoc", "query", "markdown", "markdown_inline" },
+        -- Usamos la lista dinámica
+        ensure_installed = profile_data.treesitter,
+        
         auto_install = true,
         highlight = { enable = true },
-        
-        -- Textobjects configuration (moved inside here)
         textobjects = {
           select = {
             enable = true,
